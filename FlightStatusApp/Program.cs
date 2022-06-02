@@ -1,10 +1,16 @@
 using FlightStatusApp.Config;
+using FlightStatusApp.Repositories;
+using FlightStatusApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddJwtConfiguration();
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddTransient<IRepository, FlightRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<AuthorizationService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

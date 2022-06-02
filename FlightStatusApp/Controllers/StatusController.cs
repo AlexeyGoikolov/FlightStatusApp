@@ -1,4 +1,6 @@
 ﻿using FlightStatusApp.Models;
+using FlightStatusApp.Repositories;
+using FlightStatusApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,34 +11,57 @@ namespace FlightStatusApp.Controllers;
 [Route("api/[controller]")]
 public class StatusController : Controller
 {
-    [HttpPost("/token")]
-    public IActionResult GetToken(string username, string password)
+    private IRepository _db;
+    private AuthorizationService _authService;
+
+    public StatusController(IRepository db, AuthorizationService authService)
     {
-        throw new NotImplementedException();
+        _db = db;
+        _authService = authService;
+    }
+
+    [HttpPost("/token")]
+    public async Task<ActionResult> GetToken(string username, string password)
+    {
+         var response = await _authService.GetToken(username, password);
+         return Json(response);
     }
 
     [HttpGet]
-    public Task<IActionResult> Get()
+    public async Task<ActionResult<IEnumerable<Flight>>> Get()
     {
-        throw new NotImplementedException();
+        var statuses = await _db.GetAllStatuses();
+        return new ObjectResult(statuses);
     }
     
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] string origin, string destination)
+    public async Task<ActionResult<IEnumerable<Flight>>> Get([FromQuery] string origin, string destination)
     {
-        throw new NotImplementedException();
+        var statuses = await _db.GetFilteredStatuses(origin, destination);
+        if (statuses is null)
+            return NotFound();
+        return new ObjectResult(statuses);
     }
 
     [HttpPost]
     public async Task<ActionResult<Flight>> Post(Flight flight)
     {
-        throw new NotImplementedException();
+        if (flight is null)
+            return BadRequest();
+        var addedStatus = await _db.Create(flight);
+        return Ok(addedStatus);
     }
 
     [HttpPut]
-    public async Task<ActionResult<Flight>> Put(Flight country)
+    public async Task<ActionResult<Flight>> Put(Flight flight)
     {
-        throw new NotImplementedException();
+        if (flight is null)
+            return BadRequest();
+        if (_db.GetStatus(flight.Id) is null)
+            return NotFound();
+
+        var updateStatus = await _db.Update(flight);
+        return Ok(updateStatus);
     }
 
 
