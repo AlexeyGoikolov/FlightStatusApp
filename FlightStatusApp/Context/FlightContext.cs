@@ -12,6 +12,8 @@ public class FlightContext : DbContext
 
     public FlightContext(DbContextOptions options) : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +36,7 @@ public class FlightContext : DbContext
         builder.ToTable("Users").HasKey(u => u.Id);
         builder.Property(u => u.Username).IsRequired().HasMaxLength(256);
         builder.HasIndex(u => u.Username).IsUnique();
+        builder.Property(u => u.Password).IsRequired().HasMaxLength(256);
         
     }
     
