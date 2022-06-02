@@ -20,7 +20,7 @@ public static class AuthOptions
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration.GetSection("token:audience" ).Value,
                     ValidateLifetime = true,
-                    IssuerSigningKey = GetSymmetricSecurityKey(builder.Configuration.GetSection("token:key" ).Value),
+                    IssuerSigningKey = GetSymmetricSecurityKey(builder.Configuration.GetSection("token:secret" ).Value),
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.FromMinutes(1)
                 };

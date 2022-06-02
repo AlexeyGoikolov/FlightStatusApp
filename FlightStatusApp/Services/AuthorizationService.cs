@@ -30,7 +30,7 @@ public class AuthorizationService
             notBefore: now,
             claims: identity.Claims,
             expires: now.Add(TimeSpan.FromMinutes(Convert.ToDouble(_configuration.GetSection("token:lifeTime" ).Value))),
-            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(_configuration.GetSection("token:key" ).Value),
+            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(_configuration.GetSection("token:secret" ).Value),
                 SecurityAlgorithms.HmacSha256)
         );
             
