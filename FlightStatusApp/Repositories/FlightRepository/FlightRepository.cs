@@ -19,7 +19,7 @@ public class FlightRepository : IRepository
     }
     public async Task<IEnumerable<Flight>> GetAllStatuses()
     {
-        return await _context.Statuses.ToListAsync();
+        return await _context.Statuses.OrderBy(s =>s.Arrival).ToListAsync();
     }
 
     public async Task<IEnumerable<Flight>> GetFilteredStatuses(string origin, string destination)
@@ -39,15 +39,15 @@ public class FlightRepository : IRepository
         return status;
     }
 
-    public Task<Flight> Update(Flight status)
+    public async Task<Flight> Update(Flight status)
     {
         _context.Statuses.Update(status);
         Save();
-        return Task.FromResult(status);
+        return status;
     }
 
-    public async void Save()
+    public void Save()
     {
-       await _context.SaveChangesAsync();
+       _context.SaveChanges();
     }
 }
