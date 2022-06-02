@@ -27,7 +27,7 @@ public static class AuthOptions
             });
     }
 
-    private static SymmetricSecurityKey GetSymmetricSecurityKey(string key)
+    public static SymmetricSecurityKey GetSymmetricSecurityKey(string key)
     {
         return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
     }
