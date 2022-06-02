@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlightStatusApp.Controllers;
 
-[Authorize]
+
 [ApiController]
 [Route("api/[controller]")]
 public class StatusController : Controller
@@ -26,14 +26,16 @@ public class StatusController : Controller
          var response = await _authService.GetToken(username, password);
          return Json(response);
     }
-
+    [Authorize]
     [HttpGet]
+    [Route("/getstatus")]
     public async Task<ActionResult<IEnumerable<Flight>>> Get()
     {
         var statuses = await _db.GetAllStatuses();
         return new ObjectResult(statuses);
     }
     
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Flight>>> Get([FromQuery] string origin, string destination)
     {
@@ -42,7 +44,8 @@ public class StatusController : Controller
             return NotFound();
         return new ObjectResult(statuses);
     }
-
+    
+    [Authorize(Roles = "Moderator")]
     [HttpPost]
     public async Task<ActionResult<Flight>> Post(Flight flight)
     {
@@ -51,7 +54,7 @@ public class StatusController : Controller
         var addedStatus = await _db.Create(flight);
         return Ok(addedStatus);
     }
-
+    [Authorize(Roles = "Moderator")]
     [HttpPut]
     public async Task<ActionResult<Flight>> Put(Flight flight)
     {
