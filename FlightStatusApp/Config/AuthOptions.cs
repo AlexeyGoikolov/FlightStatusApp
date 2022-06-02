@@ -7,9 +7,9 @@ namespace FlightStatusApp.Config;
 
 public static class AuthOptions
 {
-    public static AuthenticationBuilder AddJwtConfiguration(this WebApplicationBuilder builder)
+    public static void AddJwtConfiguration(this WebApplicationBuilder builder)
     {
-        var newBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(o =>
             {
                 o.RequireHttpsMetadata = false;
@@ -25,10 +25,9 @@ public static class AuthOptions
                     ClockSkew = TimeSpan.FromMinutes(1)
                 };
             });
-        return newBuilder;
     }
 
-    public static SymmetricSecurityKey GetSymmetricSecurityKey(string key)
+    private static SymmetricSecurityKey GetSymmetricSecurityKey(string key)
     {
         return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
     }
